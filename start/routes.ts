@@ -9,11 +9,12 @@
 
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+const VehiclesController=()=>import('#controllers/vehicles_controller')
 
 router.group(() => {
-  router.get('/api', async () => {
-    return {
-      hello: 'group world',
-    }
-  })
-}).use(middleware.tokenAuth)
+  router.post('/create',[VehiclesController,'create'])
+  router.get('/all',[VehiclesController,'showAll'])
+  router.get('/:id',[VehiclesController,'show'])
+  router.put('/:id',[VehiclesController,'update'])
+  router.delete('/:id',[VehiclesController,'destroy'])
+}).prefix('/api/vehicles').use(middleware.tokenAuth())

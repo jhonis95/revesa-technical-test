@@ -1,22 +1,22 @@
 import Vehicle from "#models/vehicle";
 import { DateTime } from 'luxon';
+import { VehicleUpdatableField,VehicleCreatePayload } from "../dto/vehicle.js";
 
 export class VehicleService {
   //RF01: A API deve permitir criar um novo veículo.
-  async createVehicle(data:any){//add the data type of create Vehicle
-    await Vehicle.create(data)
+  async createVehicle(data:VehicleCreatePayload){//add the data type of create Vehicle
+    return await Vehicle.create(data)
   }
   //RF02: A API deve permitir listar todos os veículos.
   async allVehicle(){
-    await Vehicle.all()
+    return await Vehicle.all()
   }
   //RF03: A API deve permitir buscar um veículo por ID.
   async getVehicle(id:number){
-    await Vehicle.find(id)
-    
+    return await Vehicle.find(id)
   }
   //RF04: A API deve permitir atualizar os dados de um veículo.
-  async updateVehicle(id:number,toChange:string,value:string|any){ //take out all any and add the right DTO
+  async updateVehicle(id:number,toChange:VehicleUpdatableField,value:string|Date){ //take out all any and add the right DTO
     const vehicle = await Vehicle.find(id)
     let updated = false
     if (!vehicle) {
@@ -24,47 +24,71 @@ export class VehicleService {
     }
     switch(toChange){
       case 'placa':
-        vehicle.placa=value
+        vehicle.placa = typeof value === 'string' ? value : value.toString()
         await vehicle.save()
         updated = true
       break;
       case 'modelo':
-        vehicle.modelo=value
+        vehicle.modelo = typeof value === 'string' ? value : value.toString()
         await vehicle.save()
         updated = true
       break;
       case 'data_entrega':
-        vehicle.dataEntrega=value
+        if (typeof value === 'string') {
+          vehicle.dataEntrega = DateTime.fromISO(value);
+        } else if (value instanceof Date) {
+          vehicle.dataEntrega = DateTime.fromJSDate(value);
+        } else {
+          throw new Error("Invalid value type for data_entrega");
+        }
         await vehicle.save()
         updated = true
       break;
       case 'data_fabricacao':
-        vehicle.dataFabricacao=value
+        if (typeof value === 'string') {
+          vehicle.dataFabricacao = DateTime.fromISO(value);
+        } else if (value instanceof Date) {
+          vehicle.dataFabricacao = DateTime.fromJSDate(value);
+        } else {
+          throw new Error("Invalid value type for data_fabricacao");
+        }
         await vehicle.save()
         updated = true
       break;
       case 'data_venda':
-        vehicle.dataVenda=value
+        if (typeof value === 'string') {
+          vehicle.dataVenda = DateTime.fromISO(value);
+        } else if (value instanceof Date) {
+          vehicle.dataVenda = DateTime.fromJSDate(value);
+        } else {
+          throw new Error("Invalid value type for data_venda");
+        }
         await vehicle.save()
         updated = true
       break;
       case 'pais_operacao':
-        vehicle.paisOperacao=value
+        vehicle.paisOperacao = typeof value === 'string' ? value : value.toString()
         await vehicle.save()
         updated = true
       break;
       case 'concessionaria_venda':
-        vehicle.concessionariaVenda=value
+        vehicle.concessionariaVenda = typeof value === 'string' ? value : value.toString()
         await vehicle.save()
         updated = true
       break;
       case 'data_ultimo_reparo':
-        vehicle.dataUltimoReparo=value
+        if (typeof value === 'string') {
+          vehicle.dataUltimoReparo = DateTime.fromISO(value);
+        } else if (value instanceof Date) {
+          vehicle.dataUltimoReparo = DateTime.fromJSDate(value);
+        } else {
+          throw new Error("Invalid value type for data_ultimo_reparo");
+        }
         await vehicle.save()
         updated = true
       break;
       case 'documento_proprietario':
-        vehicle.documentoProprietario=value
+        vehicle.documentoProprietario = typeof value === 'string' ? value : value.toString()
         await vehicle.save()
         updated = true
       break;
@@ -80,6 +104,6 @@ export class VehicleService {
     if (!vehicle) {
       throw new Error(`Vehicle with id ${id} not found`);
     }
-    await vehicle.delete()
+    return await vehicle.delete()
   }
 }

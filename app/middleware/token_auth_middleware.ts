@@ -6,11 +6,10 @@ export default class TokenAuthMiddleware {
     /**
      * Middleware logic goes here (before the next call)
      */
-    console.log(ctx)
-    const authHeader = ctx.request.header('Authorization')
+    const authHeader = ctx.request.header('authorization')
     const validToken = 'Bearer 1234567890abcdef'
 
-    if (authHeader !== validToken) {
+    if (!authHeader || authHeader !== validToken) {
       return ctx.response.unauthorized({ message: 'Invalid or missing token' })
     }
 

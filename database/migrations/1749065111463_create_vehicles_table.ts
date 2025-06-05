@@ -11,17 +11,17 @@ export default class extends BaseSchema {
       table.string('placa').notNullable()
       table.string('modelo').notNullable()
 
-      table.date('data_entrega')
-      table.date('data_fabricacao')
-      table.date('data_venda')
+      table.date('data_fabricacao').notNullable()
+      table.date('data_entrega').nullable()
+      table.date('data_venda').nullable()
 
-      table.string('pais_operacao')
-      table.string('concessionaria_venda')
+      table.string('pais_operacao').nullable()
+      table.string('concessionaria_venda').nullable()
 
-      table.date('data_ultimo_reparo')
-      table.string('documento_proprietario')
+      table.date('data_ultimo_reparo').nullable()
+      table.string('documento_proprietario').notNullable()
 
-      table.timestamp('ultima_atualizacao', { useTz: true }).notNullable()
+      table.timestamp('ultima_atualizacao', { useTz: true })
 
       table.timestamp('created_at')
       table.timestamp('updated_at')
