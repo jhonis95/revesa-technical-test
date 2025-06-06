@@ -102,8 +102,9 @@ export class VehicleService {
   async deleteVehicle(id:number){
     const vehicle = await Vehicle.find(id)
     if (!vehicle) {
-      throw new Error(`Vehicle with id ${id} not found`);
+      throw new Error(`veículo com id:${id} não encontrado`);
     }
-    return await vehicle.delete()
+    await vehicle.delete()
+    return true
   }
 }

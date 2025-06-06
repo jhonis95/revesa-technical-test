@@ -28,7 +28,16 @@ export default class VehiclesController {
           return response.badRequest({ error: 'Último reparo não pode ser anterior à fabricação.' })
         }
         try {
-            return await this.vehicleService.createVehicle(vehiclePros)
+          const newVehicle=await this.vehicleService.createVehicle(vehiclePros)
+          if(!newVehicle){
+              return response.internalServerError({
+                message:'erro ao  criar novo veículo'
+              })
+            }
+          return response.ok({
+            message:'novo veículo cadastrado com sucesso',
+            data:newVehicle
+          })
         } catch (error) {
             return response.badRequest({
               message: 'Erro ao criar veículo',
@@ -40,7 +49,7 @@ export default class VehiclesController {
         try {
           const allVehicle= await this.vehicleService.allVehicle()
           if(allVehicle.length === 0){
-            return response.ok({
+            return response.notFound({
               messages:'não tem veículo registrados',
               data: [],
             })
@@ -64,7 +73,16 @@ export default class VehiclesController {
                 message: 'ID inválido fornecido',
               })
             }
-            return this.vehicleService.getVehicle(id)
+            const vehicle= await this.vehicleService.getVehicle(id)
+            if(vehicle==null){
+              return response.notFound({
+                message:'id do veículo não encontrado'
+              })
+            }
+            return response.ok({
+              message:'veículo encontrado',
+              data:vehicle
+            })
         } catch (error) {
             return response.badRequest({
               message: 'Erro ao tentar pegar o veículo',
@@ -156,7 +174,10 @@ export default class VehiclesController {
 
           // Chamar service
           try {
-              return await this.vehicleService.updateVehicle(id,payload.toChange,payloadValueValidaded)
+            await this.vehicleService.updateVehicle(id,payload.toChange,payloadValueValidaded)
+            return response.ok({
+              message:"veículo atualizado com sucesso",
+            })
           } catch (error) {
               return response.badRequest({
                 message: 'Erro ao atualizar o veículo',
@@ -180,13 +201,21 @@ export default class VehiclesController {
                 message: 'ID inválido fornecido',
               })
             }
-            return await this.vehicleService.deleteVehicle(id)
+            const deleted = await this.vehicleService.deleteVehicle(id)
+
+            if (!deleted) {
+              return response.notFound({
+                message: 'Veículo não encontrado para exclusão',
+              })
+            }
+            return response.ok({
+              message: 'Veículo excluído com sucesso',
+            })
         } catch (error) {
             return response.badRequest({
-              message: 'Erro ao atualizar o veículo',
+              message: 'Erro ao deletar o veículo',
               details: error.message,
             })
         }
-        
     }
 }
