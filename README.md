@@ -20,7 +20,10 @@ Certifique-se de que no arquivo `.env` tenha o **DB_PASSWORD** e **DB_DATABASE**
 
 
 ## Utilização
+Use o comando `node ace migration:run` para criar as tabelas necessárias do projeto no banco de dados.
+
 Para iniciar o servidor use o comando `node ace serve` no terminal na pasta do projeto. Ao fazer isso, um servidor será inicializado no endereço **http://localhost:3333**
+
 
 ## API Endpoints
 Para a utilização da API deve-se ter o token `Bearer 1234567890abcdef` no header `Authorization` assim como pedido no desafio. Sem esse token nem uma rota será acessível.
