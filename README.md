@@ -25,11 +25,11 @@ Para iniciar o servidor use o comando `node ace serve` no terminal na pasta do p
 ## API Endpoints
 Para a utilização da API deve-se ter o token `Bearer 1234567890abcdef` no header `Authorization` assim como pedido no desafio. Sem esse token nem uma rota será acessível.
 
-- `POST   /api/vehicles/create`  criar um novo veículo.
-- `GET    /api/vehicles/all`     listar todos os veículos.
-- `GET    /api/vehicles/:id`     buscar um veículo por ID.
-- `PUT    /api/vehicles/:id`     atualizar os dados de um veículo.
-- `DELETE /api/vehicles/:id`     deletar um veículo.
+- `POST   /api/vehicles/create`     criar um novo veículo.
+- `GET    /api/vehicles/all`        listar todos os veículos.
+- `GET    /api/vehicles/:id`        buscar um veículo por ID.
+- `PATCH  /api/vehicles/:id`        atualizar os dados de um veículo.
+- `DELETE /api/vehicles/:id`        deletar um veículo.
 
 Para criar um veículo novo na rota `POST   /api/vehicles/create` os campos **vin**, **placa**, **modelo**,**data_fabricacao** e **documento_proprietario** são obrigatorios. todos os campos passam por uma validação com regras reais, então devem ser preencidos de forma correta, exemplo:
 ```json

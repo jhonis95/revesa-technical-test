@@ -16,7 +16,7 @@ export class VehicleService {
     return await Vehicle.find(id)
   }
   //RF04: A API deve permitir atualizar os dados de um veículo.
-  async updateVehicle(id:number,toChange:VehicleUpdatableField,value:string|Date){ //take out all any and add the right DTO
+  async updateVehicle(id:number,toChange:VehicleUpdatableField,value:string|DateTime){ //take out all any and add the right DTO
     const vehicle = await Vehicle.find(id)
     let updated = false
     if (!vehicle) {
@@ -34,23 +34,15 @@ export class VehicleService {
         updated = true
       break;
       case 'data_entrega':
-        if (typeof value === 'string') {
+        if(typeof value === 'string') {
           vehicle.dataEntrega = DateTime.fromISO(value);
-        } else if (value instanceof Date) {
-          vehicle.dataEntrega = DateTime.fromJSDate(value);
-        } else {
-          throw new Error("Invalid value type for data_entrega");
         }
         await vehicle.save()
         updated = true
       break;
       case 'data_fabricacao':
-        if (typeof value === 'string') {
+        if(typeof value === 'string') {
           vehicle.dataFabricacao = DateTime.fromISO(value);
-        } else if (value instanceof Date) {
-          vehicle.dataFabricacao = DateTime.fromJSDate(value);
-        } else {
-          throw new Error("Invalid value type for data_fabricacao");
         }
         await vehicle.save()
         updated = true
@@ -58,10 +50,6 @@ export class VehicleService {
       case 'data_venda':
         if (typeof value === 'string') {
           vehicle.dataVenda = DateTime.fromISO(value);
-        } else if (value instanceof Date) {
-          vehicle.dataVenda = DateTime.fromJSDate(value);
-        } else {
-          throw new Error("Invalid value type for data_venda");
         }
         await vehicle.save()
         updated = true
@@ -79,10 +67,6 @@ export class VehicleService {
       case 'data_ultimo_reparo':
         if (typeof value === 'string') {
           vehicle.dataUltimoReparo = DateTime.fromISO(value);
-        } else if (value instanceof Date) {
-          vehicle.dataUltimoReparo = DateTime.fromJSDate(value);
-        } else {
-          throw new Error("Invalid value type for data_ultimo_reparo");
         }
         await vehicle.save()
         updated = true

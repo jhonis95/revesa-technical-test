@@ -25,7 +25,7 @@ export default class VehiclesController {
         }
         
         if (vehiclePros.data_ultimo_reparo && vehiclePros.data_ultimo_reparo < vehiclePros.data_fabricacao) {
-          return response.badRequest({ error: 'Último reparo não pode ser anterior à fabricação.' })
+          return response.badRequest({ error: 'Último reparo não pode ser anterior à data de fabricação.' })
         }
         try {
           const newVehicle=await this.vehicleService.createVehicle(vehiclePros)
@@ -40,7 +40,7 @@ export default class VehiclesController {
           })
         } catch (error) {
             return response.badRequest({
-              message: 'Erro ao criar veículo',
+              message: 'Erro ao criar novo veículo',
               details: error.message,
             })
         }
@@ -115,14 +115,14 @@ export default class VehiclesController {
         try {
           const validatorMap = {
             placa: vine.string().regex(/^[A-Z]{3}[0-9][A-Z0-9][0-9]{2}$/),
-            documento_proprietario: vine.string().use(validateCpfOrCnpj()),
-            data_entrega: vine.date({ formats: ['yyyy-MM-dd'] }),
-            data_fabricacao: vine.date({ formats: ['yyyy-MM-dd'] }),
-            data_venda: vine.date({ formats: ['yyyy-MM-dd'] }),
-            data_ultimo_reparo: vine.date({ formats: ['yyyy-MM-dd'] }),
             modelo: vine.string().minLength(1),
+            data_fabricacao: vine.date().transform((value) => DateTime.fromJSDate(value)),
+            data_entrega: vine.date().optional().transform((value) => DateTime.fromJSDate(value)),
+            data_venda: vine.date().optional().transform((value) => DateTime.fromJSDate(value)),
             pais_operacao: vine.string().minLength(1),
             concessionaria_venda: vine.string().minLength(1),
+            documento_proprietario: vine.string().use(validateCpfOrCnpj()),
+            data_ultimo_reparo: vine.date().optional().transform((value) => DateTime.fromJSDate(value)),
           }
         
           const rule = validatorMap[payload.toChange]
@@ -136,20 +136,11 @@ export default class VehiclesController {
           if (payload.toChange === 'data_entrega'||payload.toChange === 'data_venda'){
               const value=parseIfDate(payload.toChange,payloadValueValidaded)
               //RN03: A data_fabricacao não pode ser posterior à data_entrega ou data_venda.
-              if(value>vehicle.dataEntrega||value>vehicle.dataVenda){
-                return response.badRequest({ error: 'Data de fabricação não pode ser posterior à entrega ou venda.' })
+              if(value<vehicle.dataFabricacao||value<vehicle.dataFabricacao){
+                return response.badRequest({ error: 'Data de entrega ou venda não pode ser anterior à data de fabricação .' })
               }
           }
           //RN03: A data_fabricacao não pode ser posterior à data_entrega ou data_venda.
-          if (payload.toChange === 'data_entrega' || payload.toChange === 'data_venda') {
-            const value = parseIfDate(payload.toChange, payloadValueValidaded)
-                    
-            if (vehicle.dataFabricacao && vehicle.dataFabricacao > value) {
-              return response.badRequest({
-                error: 'Data de fabricação está posterior à entrega ou venda.',
-              })
-            }
-          }
           if (payload.toChange === 'data_fabricacao') {
             const value = parseIfDate(payload.toChange, payloadValueValidaded)
 
@@ -167,7 +158,7 @@ export default class VehiclesController {
             //RN04: A data_ultimo_reparo não pode ser anterior à data_fabricacao.
             if (vehicle.dataFabricacao && value < vehicle.dataFabricacao) {
               return response.badRequest({
-                error: 'Último reparo não pode ser anterior à fabricação.',
+                error: 'Último reparo não pode ser anterior à a data de fabricação.',
               })
             }
           }
